@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Railway Booking System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            color: #2a5298;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #2a5298;
+        }
+
+        .signup-btn {
+            width: 100%;
+            background: #2a5298;
+            color: white;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-bottom: 1rem;
+        }
+
+        .signup-btn:hover {
+            background: #1e3c72;
+        }
+
+        .error {
+            background: #ffe6e6;
+            color: #ff3333;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .success {
+            background: #e6ffe6;
+            color: #00cc00;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .links {
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .links a {
+            color: #2a5298;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+
+        .links a:hover {
+            color: #1e3c72;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 1rem;
+            display: none;
+        }
+
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #2a5298;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Create Account</h1>
+            <p>Join our Railway Booking System</p>
+        </div>
+
+        <div class="error" id="error-message"></div>
+        <div class="success" id="success-message"></div>
+        <div class="loading" id="loading"></div>
+
+        <form id="signupForm">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" required>
+            </div>
+            <div class="form-group">
+                <label for="full_name">Full Name</label>
+                <input type="text" id="full_name" required>
+            </div>
+            <div class="form-group">
+                <label for="phone_number">Phone Number</label>
+                <input type="tel" id="phone_number" required>
+            </div>
+            <button type="submit" class="signup-btn">Create Account</button>
+        </form>
+
+        <div class="links">
+            <a href="login.html">Already have an account? Login</a>
+        </div>
+    </div>
+
+    <script>
+        // Check if user is already logged in
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (user) {
+            window.location.href = 'index.html';
+        }
+
+        // Handle signup form submission
+        document.getElementById('signupForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const errorDiv = document.getElementById('error-message');
+            const successDiv = document.getElementById('success-message');
+            const loadingDiv = document.getElementById('loading');
+
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const full_name = document.getElementById('full_name').value;
+            const phone_number = document.getElementById('phone_number').value;
+
+            // Basic validation
+            if (password.length < 6) {
+                errorDiv.style.display = 'block';
+                errorDiv.textContent = 'Password must be at least 6 characters long';
+                return;
+            }
+
+            if (!/^\d{10}$/.test(phone_number)) {
+                errorDiv.style.display = 'block';
+                errorDiv.textContent = 'Please enter a valid 10-digit phone number';
+                return;
+            }
+
+            loadingDiv.style.display = 'block';
+            errorDiv.style.display = 'none';
+            successDiv.style.display = 'none';
+
+            try {
+                const response = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username,
+                        email,
+                        password,
+                        full_name,
+                        phone_number
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    successDiv.style.display = 'block';
+                    successDiv.textContent = 'Account created successfully! Redirecting to login...';
+                    
+                    // Redirect to login page after 2 seconds
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 2000);
+                } else {
+                    errorDiv.style.display = 'block';
+                    errorDiv.textContent = data.error || 'Registration failed';
+                }
+            } catch (error) {
+                errorDiv.style.display = 'block';
+                errorDiv.textContent = 'An error occurred. Please try again.';
+            } finally {
+                loadingDiv.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html> 

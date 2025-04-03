@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Train Tickets - Railway Booking System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            min-height: 100vh;
+            padding: 2rem 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* Header Styles */
+        header {
+            background: white;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            color: #2a5298;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+
+        nav a {
+            color: #2a5298;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        nav a:hover {
+            color: #1e3c72;
+            background: rgba(42, 82, 152, 0.1);
+        }
+
+        nav a.active {
+            color: #1e3c72;
+            font-weight: 600;
+            background: rgba(42, 82, 152, 0.1);
+        }
+
+        /* Search Section Styles */
+        .search-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .search-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 0;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group select, 
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-group select:focus, 
+        .form-group input:focus {
+            outline: none;
+            border-color: #2a5298;
+            box-shadow: 0 0 0 2px rgba(42, 82, 152, 0.1);
+        }
+
+        .search-btn {
+            background: #2a5298;
+            color: white;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            align-self: flex-end;
+        }
+
+        .search-btn:hover {
+            background: #1e3c72;
+            transform: translateY(-2px);
+        }
+
+        /* Train Cards Styles */
+        .trains-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        .train-card {
+            border: 1px solid #eee;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .train-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .train-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .train-name {
+            font-size: 1.3rem;
+            color: #2a5298;
+            font-weight: 600;
+        }
+
+        .train-number {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .train-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-item {
+            text-align: center;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+
+        .detail-label {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .detail-value {
+            color: #333;
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+
+        .train-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid #eee;
+        }
+
+        .price {
+            font-size: 1.3rem;
+            color: #2a5298;
+            font-weight: 600;
+        }
+
+        .book-btn {
+            background: #2a5298;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .book-btn:hover {
+            background: #1e3c72;
+            transform: translateY(-2px);
+        }
+
+        /* Error and Loading Styles */
+        .error {
+            background: #ffe6e6;
+            color: #ff3333;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            display: none;
+        }
+
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #2a5298;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Passenger Form Styles */
+        .passenger-form {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.2);
+            z-index: 1000;
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .passenger-form h2 {
+            margin-bottom: 1.5rem;
+            color: #2a5298;
+            text-align: center;
+        }
+
+        .passenger-form .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .passenger-form label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .passenger-form input, 
+        .passenger-form select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .passenger-form input:focus, 
+        .passenger-form select:focus {
+            outline: none;
+            border-color: #2a5298;
+            box-shadow: 0 0 0 2px rgba(42, 82, 152, 0.1);
+        }
+
+        .passenger-form .buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .passenger-form button {
+            flex: 1;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 5px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .passenger-form .confirm-btn {
+            background: #2a5298;
+            color: white;
+        }
+
+        .passenger-form .confirm-btn:hover {
+            background: #1e3c72;
+            transform: translateY(-2px);
+        }
+
+        .passenger-form .cancel-btn {
+            background: #ff4444;
+            color: white;
+        }
+
+        .passenger-form .cancel-btn:hover {
+            background: #cc0000;
+            transform: translateY(-2px);
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .search-form {
+                grid-template-columns: 1fr;
+            }
+
+            .train-details {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .train-footer {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .book-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Railway Booking System</h1>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="booking.html" class="active">Book Train</a></li>
+                    <li><a href="booking-details.html">Booking Details</a></li>
+                    <li><a href="login.html" id="loginBtn">Login</a></li>
+                    <li><a href="#" id="logoutBtn" style="display: none;">Logout</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <div class="search-section">
+            <form id="searchForm" class="search-form">
+                <div class="form-group">
+                    <label for="from-station">From Station</label>
+                    <select id="from-station" required>
+                        <option value="">Select Station</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="to-station">To Station</label>
+                    <select id="to-station" required>
+                        <option value="">Select Station</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="journey-date">Journey Date</label>
+                    <input type="date" id="journey-date" required min="">
+                </div>
+                <div class="form-group">
+                    <label for="class">Class</label>
+                    <select id="class" required>
+                        <option value="">Select Class</option>
+                        <option value="1">First Class AC</option>
+                        <option value="2">Second Class AC</option>
+                        <option value="3">Third Class AC</option>
+                        <option value="4">Sleeper Class</option>
+                        <option value="5">General</option>
+                    </select>
+                </div>
+                <button type="submit" class="search-btn">Search Trains</button>
+            </form>
+        </div>
+
+        <div class="error" id="error-message"></div>
+        <div class="loading" id="loading"></div>
+
+        <div class="trains-section" id="trains-container">
+            <!-- Train cards will be dynamically added here -->
+        </div>
+    </div>
+
+    <script>
+        // Check if user is logged in
+        const token = localStorage.getItem('token');
+        const user = JSON.parse(localStorage.getItem('user'));
+        
+        if (!token || !user) {
+            window.location.href = 'login.html';
+        }
+        
+        // Update login/logout buttons
+        document.getElementById('loginBtn').style.display = 'none';
+        document.getElementById('logoutBtn').style.display = 'block';
+        
+        // Logout functionality
+        document.getElementById('logoutBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = 'login.html';
+        });
+
+        // Set minimum date for journey date input
+        const today = new Date();
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        const minDate = tomorrow.toISOString().split('T')[0];
+        document.getElementById('journey-date').min = minDate;
+
+        // Load stations
+        async function loadStations() {
+            const fromSelect = document.getElementById('from-station');
+            const toSelect = document.getElementById('to-station');
+            const errorDiv = document.getElementById('error-message');
+
+            try {
+                console.log('Fetching stations from server...');
+                const response = await fetch('/api/stations');
+                const data = await response.json();
+                console.log('Received stations data:', data);
+
+                if (response.ok) {
+                    // Clear existing options
+                    fromSelect.innerHTML = '<option value="">Select From Station</option>';
+                    toSelect.innerHTML = '<option value="">Select To Station</option>';
+
+                    // Add stations to both dropdowns
+                    data.forEach(station => {
+                        const fromOption = document.createElement('option');
+                        fromOption.value = station.station;
+                        fromOption.textContent = station.station;
+                        fromSelect.appendChild(fromOption);
+
+                        const toOption = document.createElement('option');
+                        toOption.value = station.station;
+                        toOption.textContent = station.station;
+                        toSelect.appendChild(toOption);
+                    });
+
+                    // Add change event listeners to prevent same station selection
+                    fromSelect.addEventListener('change', () => {
+                        if (fromSelect.value === toSelect.value) {
+                            toSelect.value = '';
+                            errorDiv.style.display = 'block';
+                            errorDiv.textContent = 'From and To stations cannot be the same';
+                        } else {
+                            errorDiv.style.display = 'none';
+                        }
+                    });
+
+                    toSelect.addEventListener('change', () => {
+                        if (fromSelect.value === toSelect.value) {
+                            fromSelect.value = '';
+                            errorDiv.style.display = 'block';
+                            errorDiv.textContent = 'From and To stations cannot be the same';
+                        } else {
+                            errorDiv.style.display = 'none';
+                        }
+                    });
+                } else {
+                    errorDiv.style.display = 'block';
+                    errorDiv.textContent = data.error || 'Failed to load stations';
+                    console.error('Error loading stations:', data.error);
+                }
+            } catch (error) {
+                errorDiv.style.display = 'block';
+                errorDiv.textContent = 'Failed to load stations. Please try again.';
+                console.error('Error fetching stations:', error);
+            }
+        }
+
+        // Search trains
+        document.getElementById('searchForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const errorDiv = document.getElementById('error-message');
+            const loadingDiv = document.getElementById('loading');
+            const trainsContainer = document.getElementById('trains-container');
+
+            const fromStation = document.getElementById('from-station').value;
+            const toStation = document.getElementById('to-station').value;
+            const journeyDate = document.getElementById('journey-date').value;
+            const classId = document.getElementById('class').value;
+
+            // Validate date
+            const selectedDate = new Date(journeyDate);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            if (selectedDate < today) {
+                errorDiv.style.display = 'block';
+                errorDiv.textContent = 'Journey date cannot be in the past';
+                return;
+            }
+
+            if (fromStation === toStation) {
+                errorDiv.style.display = 'block';
+                errorDiv.textContent = 'From and To stations cannot be the same';
+                return;
+            }
+
+            loadingDiv.style.display = 'block';
+            errorDiv.style.display = 'none';
+            trainsContainer.innerHTML = '';
+
+            try {
+                const response = await fetch('/api/search-trains', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        from_station: fromStation,
+                        to_station: toStation,
+                        journey_date: journeyDate,
+                        class_id: classId
+                    })
+                });
+
+                const trains = await response.json();
+
+                if (response.ok) {
+                    if (trains.length === 0) {
+                        trainsContainer.innerHTML = '<p>No trains found for the selected criteria.</p>';
+                    } else {
+                        trains.forEach(train => {
+                            const trainCard = createTrainCard(train);
+                            trainsContainer.appendChild(trainCard);
+                        });
+                    }
+                } else {
+                    errorDiv.style.display = 'block';
+                    errorDiv.textContent = trains.error || 'Failed to fetch trains';
+                }
+            } catch (error) {
+                errorDiv.style.display = 'block';
+                errorDiv.textContent = 'An error occurred. Please try again.';
+            } finally {
+                loadingDiv.style.display = 'none';
+            }
+        });
+
+        // Create train card
+        function createTrainCard(train) {
+            const card = document.createElement('div');
+            card.className = 'train-card';
+            card.innerHTML = `
+                <div class="train-header">
+                    <div class="train-name">${train.name}</div>
+                    <div class="train-number">${train.train_number}</div>
+                </div>
+                <div class="train-details">
+                    <div class="detail-item">
+                        <div class="detail-label">From</div>
+                        <div class="detail-value">${train.from_station}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">To</div>
+                        <div class="detail-value">${train.to_station}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Departure</div>
+                        <div class="detail-value">${train.departure_time}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Arrival</div>
+                        <div class="detail-value">${train.arrival_time}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Duration</div>
+                        <div class="detail-value">${train.duration}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Available Seats</div>
+                        <div class="detail-value">${train.available_seats}</div>
+                    </div>
+                </div>
+                <div class="train-footer">
+                    <div class="price">₹${train.price}</div>
+                    <button class="book-btn" onclick="bookTrain(${train.id})">Book Now</button>
+                </div>
+            `;
+            return card;
+        }
+
+        // Book train
+        async function bookTrain(trainId) {
+            const journeyDate = document.getElementById('journey-date').value;
+            const classId = document.getElementById('class').value;
+
+            // Show passenger form
+            const overlay = document.createElement('div');
+            overlay.className = 'overlay';
+            document.body.appendChild(overlay);
+
+            const form = document.createElement('div');
+            form.className = 'passenger-form';
+            form.innerHTML = `
+                <h2>Enter Passenger Details</h2>
+                <div class="form-group">
+                    <label for="passenger-name">Full Name</label>
+                    <input type="text" id="passenger-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="passenger-age">Age</label>
+                    <input type="number" id="passenger-age" required min="1" max="120">
+                </div>
+                <div class="form-group">
+                    <label for="passenger-gender">Gender</label>
+                    <select id="passenger-gender" required>
+                        <option value="">Select Gender</option>
+                        <option value="M">Male</option>
+                        <option value="F">Female</option>
+                    </select>
+                </div>
+                <div class="buttons">
+                    <button class="confirm-btn" onclick="confirmBooking(${trainId})">Confirm Booking</button>
+                    <button class="cancel-btn" onclick="cancelBooking()">Cancel</button>
+                </div>
+            `;
+            document.body.appendChild(form);
+
+            overlay.style.display = 'block';
+            form.style.display = 'block';
+        }
+
+        async function confirmBooking(trainId) {
+            const passengerName = document.getElementById('passenger-name').value;
+            const passengerAge = document.getElementById('passenger-age').value;
+            const passengerGender = document.getElementById('passenger-gender').value;
+            const journeyDate = document.getElementById('journey-date').value;
+            const classId = document.getElementById('class').value;
+
+            if (!passengerName || !passengerAge || !passengerGender) {
+                alert('Please fill in all passenger details');
+                return;
+            }
+
+            const token = localStorage.getItem('token');
+            const user = JSON.parse(localStorage.getItem('user'));
+
+            if (!token || !user) {
+                alert('Please login again');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/bookings', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        train_id: trainId,
+                        class_id: classId,
+                        journey_date: journeyDate,
+                        passenger_name: passengerName,
+                        passenger_age: passengerAge,
+                        passenger_gender: passengerGender
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert('Booking successful! Your booking number is: ' + data.booking_number);
+                    window.location.href = 'my-bookings.html';
+                } else {
+                    if (response.status === 401) {
+                        // Token expired
+                        localStorage.removeItem('token');
+                        localStorage.removeItem('user');
+                        alert('Your session has expired. Please login again.');
+                        window.location.href = 'login.html';
+                    } else if (response.status === 403) {
+                        // Invalid token
+                        if (data.error === 'Invalid token format') {
+                            console.error('Token format issue:', token);
+                            localStorage.removeItem('token');
+                            localStorage.removeItem('user');
+                            alert('Authentication error. Please login again.');
+                            window.location.href = 'login.html';
+                        } else {
+                            alert(data.error || 'Authentication failed. Please try again.');
+                        }
+                    } else {
+                        alert(data.error || 'Booking failed. Please try again.');
+                    }
+                }
+            } catch (error) {
+                console.error('Booking error:', error);
+                alert('An error occurred during booking. Please try again.');
+            } finally {
+                cancelBooking();
+            }
+        }
+
+        function cancelBooking() {
+            const overlay = document.querySelector('.overlay');
+            const form = document.querySelector('.passenger-form');
+            if (overlay) overlay.remove();
+            if (form) form.remove();
+        }
+
+        // Initialize
+        loadStations();
+    </script>
+</body>
+</html> 

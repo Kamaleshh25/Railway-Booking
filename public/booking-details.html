@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Details - Railway Booking System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Railway Booking System</h1>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="booking.html">Book Train</a></li>
+                    <li><a href="booking-details.html" class="active">Booking Details</a></li>
+                    <li><a href="login.html" id="loginBtn">Login</a></li>
+                    <li><a href="#" id="logoutBtn" style="display: none;">Logout</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main>
+            <div class="booking-details-container">
+                <h2>View Booking Details</h2>
+                
+                <div class="search-form">
+                    <input type="text" id="booking-id" placeholder="Enter Booking ID or Booking Number" required>
+                    <button id="search-btn">Search</button>
+                </div>
+                
+                <div class="loading" id="loading"></div>
+                <div class="error-message" id="error-message"></div>
+                
+                <div class="booking-details" id="booking-details">
+                    <div class="details-section">
+                        <h3>Booking Information</h3>
+                        <div class="details-grid">
+                            <div class="detail-item">
+                                <div class="detail-label">Booking Number</div>
+                                <div class="detail-value" id="booking-number"></div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Booking Date</div>
+                                <div class="detail-value" id="booking-date"></div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Journey Date</div>
+                                <div class="detail-value" id="journey-date"></div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Status</div>
+                                <div class="detail-value" id="booking-status"></div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Total Amount</div>
+                                <div class="detail-value" id="total-amount"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="details-section">
+                        <h3>Train Information</h3>
+                        <div class="details-grid">
+                            <div class="detail-item">
+                                <div class="detail-label">Train Name</div>
+                                <div class="detail-value" id="train-name"></div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Train Number</div>
+                                <div class="detail-value" id="train-number"></div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">From Station</div>
+                                <div class="detail-value" id="from-station"></div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">To Station</div>
+                                <div class="detail-value" id="to-station"></div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Departure Time</div>
+                                <div class="detail-value" id="departure-time"></div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Arrival Time</div>
+                                <div class="detail-value" id="arrival-time"></div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Class</div>
+                                <div class="detail-value" id="class-name"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="details-section">
+                        <h3>Passenger Information</h3>
+                        <div class="passenger-details">
+                            <div class="details-grid">
+                                <div class="detail-item">
+                                    <div class="detail-label">Passenger Name</div>
+                                    <div class="detail-value" id="passenger-name"></div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Age</div>
+                                    <div class="detail-value" id="passenger-age"></div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Gender</div>
+                                    <div class="detail-value" id="passenger-gender"></div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Seat Number</div>
+                                    <div class="detail-value" id="seat-number"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchBtn = document.getElementById('search-btn');
+            const bookingIdInput = document.getElementById('booking-id');
+            const bookingDetails = document.getElementById('booking-details');
+            const loading = document.getElementById('loading');
+            const errorMessage = document.getElementById('error-message');
+            
+            // Check if user is logged in
+            const token = localStorage.getItem('token');
+            const user = JSON.parse(localStorage.getItem('user'));
+            
+            if (token && user) {
+                document.getElementById('loginBtn').style.display = 'none';
+                document.getElementById('logoutBtn').style.display = 'block';
+            } else {
+                document.getElementById('loginBtn').style.display = 'block';
+                document.getElementById('logoutBtn').style.display = 'none';
+            }
+            
+            // Logout functionality
+            document.getElementById('logoutBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = 'login.html';
+            });
+            
+            // Search booking details
+            searchBtn.addEventListener('click', function() {
+                const bookingId = bookingIdInput.value.trim();
+                
+                if (!bookingId) {
+                    showError('Please enter a booking ID or booking number');
+                    return;
+                }
+                
+                searchBookingDetails(bookingId);
+            });
+            
+            // Allow search on Enter key
+            bookingIdInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    searchBtn.click();
+                }
+            });
+            
+            async function searchBookingDetails(bookingId) {
+                try {
+                    // Show loading
+                    loading.style.display = 'block';
+                    errorMessage.style.display = 'none';
+                    bookingDetails.style.display = 'none';
+                    
+                    // Determine if input is booking ID or booking number
+                    const isBookingNumber = isNaN(bookingId);
+                    
+                    // Make API request
+                    const response = await fetch(`/api/booking-details/${isBookingNumber ? 'number/' + bookingId : bookingId}`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        // Display booking details
+                        displayBookingDetails(data);
+                    } else {
+                        showError(data.error || 'Failed to fetch booking details');
+                    }
+                } catch (error) {
+                    console.error('Error fetching booking details:', error);
+                    showError('An error occurred while fetching booking details');
+                } finally {
+                    loading.style.display = 'none';
+                }
+            }
+            
+            function displayBookingDetails(data) {
+                // Booking Information
+                document.getElementById('booking-number').textContent = data.booking_number;
+                document.getElementById('booking-date').textContent = formatDate(data.booking_date);
+                document.getElementById('journey-date').textContent = formatDate(data.journey_date);
+                document.getElementById('booking-status').textContent = capitalizeFirstLetter(data.status);
+                document.getElementById('total-amount').textContent = `₹${data.total_amount}`;
+                
+                // Train Information
+                document.getElementById('train-name').textContent = data.train_name;
+                document.getElementById('train-number').textContent = data.train_number;
+                document.getElementById('from-station').textContent = data.from_station;
+                document.getElementById('to-station').textContent = data.to_station;
+                document.getElementById('departure-time').textContent = data.departure_time;
+                document.getElementById('arrival-time').textContent = data.arrival_time;
+                document.getElementById('class-name').textContent = data.class_name;
+                
+                // Passenger Information
+                document.getElementById('passenger-name').textContent = data.passenger_name;
+                document.getElementById('passenger-age').textContent = data.passenger_age;
+                document.getElementById('passenger-gender').textContent = data.passenger_gender === 'M' ? 'Male' : (data.passenger_gender === 'F' ? 'Female' : 'Other');
+                document.getElementById('seat-number').textContent = data.seat_number || 'Not assigned';
+                
+                // Show booking details
+                bookingDetails.style.display = 'block';
+            }
+            
+            function showError(message) {
+                errorMessage.textContent = message;
+                errorMessage.style.display = 'block';
+            }
+            
+            function formatDate(dateString) {
+                const date = new Date(dateString);
+                return date.toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                });
+            }
+            
+            function capitalizeFirstLetter(string) {
+                return string.charAt(0).toUpperCase() + string.slice(1);
+            }
+        });
+    </script>
+</body>
+</html> 

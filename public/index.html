@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Railway Booking System - Home</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .hero-section {
+            text-align: center;
+            padding: 3rem 0;
+            margin-bottom: 2rem;
+        }
+        
+        .hero-section h1 {
+            font-size: 2.5rem;
+            color: #2a5298;
+            margin-bottom: 1rem;
+        }
+        
+        .hero-section p {
+            font-size: 1.2rem;
+            color: #666;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .feature-card h3 {
+            color: #2a5298;
+            margin-bottom: 1rem;
+        }
+        
+        .feature-card p {
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+        
+        .feature-card a {
+            display: inline-block;
+            background: #2a5298;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+        
+        .feature-card a:hover {
+            background: #1e3c72;
+        }
+        
+        .cta-section {
+            text-align: center;
+            padding: 3rem 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+        
+        .cta-section h2 {
+            color: white;
+            margin-bottom: 1.5rem;
+        }
+        
+        .cta-section p {
+            color: rgba(255, 255, 255, 0.8);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 2rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .cta-primary {
+            background: white;
+            color: #2a5298;
+        }
+        
+        .cta-primary:hover {
+            background: #f0f0f0;
+            transform: translateY(-2px);
+        }
+        
+        .cta-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+        
+        .cta-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 768px) {
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .cta-button {
+                width: 100%;
+                max-width: 300px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Railway Booking System</h1>
+            <nav>
+                <ul>
+                    <li><a href="index.html" class="active">Home</a></li>
+                    <li><a href="booking.html">Book Train</a></li>
+                    <li><a href="booking-details.html">Booking Details</a></li>
+                    <li><a href="login.html" id="loginBtn">Login</a></li>
+                    <li><a href="#" id="logoutBtn" style="display: none;">Logout</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main>
+            <section class="hero-section">
+                <h1>Welcome to Railway Booking System</h1>
+                <p>Book your train tickets easily and securely. Find the best routes, check seat availability, and manage your bookings all in one place.</p>
+            </section>
+            
+            <section class="features">
+                <div class="feature-card">
+                    <h3>Book Train Tickets</h3>
+                    <p>Search for trains, check availability, and book tickets for your journey with just a few clicks.</p>
+                    <a href="booking.html">Book Now</a>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>View Booking Details</h3>
+                    <p>Check your booking status, view ticket details, and get all the information about your journey.</p>
+                    <a href="booking-details.html">View Details</a>
+                </div>
+            </section>
+            
+            <section class="cta-section">
+                <h2>Ready to Start Your Journey?</h2>
+                <p>Book your train tickets now and enjoy a hassle-free travel experience.</p>
+                <div class="cta-buttons">
+                    <a href="booking-details.html" class="cta-button cta-secondary">Check Booking</a>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is logged in
+            const token = localStorage.getItem('token');
+            const user = JSON.parse(localStorage.getItem('user'));
+            
+            if (token && user) {
+                document.getElementById('loginBtn').style.display = 'none';
+                document.getElementById('logoutBtn').style.display = 'block';
+            } else {
+                document.getElementById('loginBtn').style.display = 'block';
+                document.getElementById('logoutBtn').style.display = 'none';
+            }
+            
+            // Logout functionality
+            document.getElementById('logoutBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = 'login.html';
+            });
+        });
+    </script>
+</body>
+</html> 
